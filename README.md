@@ -1,12 +1,13 @@
-# NestJS JWT Auth
+# SisGBM
 
-Projeto NestJS com autenticação JWT completa: access token + refresh token.
+Projeto NestJS com autenticação JWT completa: access token + refresh token, CRUD.
 
 ## Tecnologias
 - **NestJS** — framework Node.js
 - **@nestjs/jwt** + **passport-jwt** — autenticação JWT
 - **bcryptjs** — hash de senhas
 - **class-validator** — validação de DTOs
+- **prisma** - ORM de acesso ao Banco de Dados PostgreSQL
 
 ## Instalação
 
@@ -27,7 +28,7 @@ yarn build
 yarn start:prod
 ```
 
-## Endpoints
+## Endpoints Livres
 
 | Método | Rota                | Autenticação    | Descrição           |
 |--------|---------------------|-----------------|---------------------|
@@ -35,7 +36,6 @@ yarn start:prod
 | POST   | /api/auth/login     | —               | Login               |
 | POST   | /api/auth/refresh   | Refresh Token   | Renovar tokens      |
 | POST   | /api/auth/logout    | Bearer Token    | Logout              |
-| GET    | /api/users/profile  | Bearer Token    | Perfil do usuário   |
 
 ## Exemplos de uso
 
@@ -66,31 +66,45 @@ curl -X POST http://localhost:3000/api/auth/refresh \
   -d '{"refreshToken":"SEU_REFRESH_TOKEN"}'
 ```
 
-## Arquitetura
+## Arquitetura Básica
 
 ```
 src/
 ├── auth/
-│   ├── dto/                  # Validação de entrada
-│   │   ├── login.dto.ts
-│   │   ├── register.dto.ts
-│   │   └── refresh.dto.ts
-│   ├── guards/               # Guards JWT
+|   ├──application                        # Executa as Regras de Negócio - não sabe nada de HTTP e Banco
+│   │   ├── dto/                          # Validação de entrada
+│   │   │   ├── login.dto.ts
+│   │   │   ├── register.dto.ts
+│   │   │   └── refresh.dto.ts
+│   │   ├── login.usecase.ts     
+│   │   ├── logout.usecase.ts
+│   │   ├── refresh.usecase.ts
+│   │   ├── register.usecase.ts
+│   ├── strategies/                      # Estratégias Passport
+│   │   │   ├── jwt.strategy.ts
+│   │   │   └── jwt-refresh.strategy.ts
+|   ├── infrastructure/ 
+│   │   ├── auth.controller.ts           # Somente HTTP
+│   │   ├── auth.module.ts               # Conecta interface ao implementação concreta
+│   │   └── auth.service.ts              # Suporte para usecases
+├── users/
+|   ├── domain/
+│   │   ├── user.entity.ts               # Regras de negócio pura - Sem framework, sem banco, sem http
+│   │   ├── user.repository.ts           # Interface/Contrato - Define o que o repositório deve fazer, sem saber como.
+|   ├── infrastructure/
+│   │   ├── user.prisma.repository.ts    # Implementação da Interface/contrato - Onde realiza as requisições de banco
+│   │   ├── users.controller.ts
+│   │   └── users.module.ts
+├── perfil/
+...
+├── common/
+│   ├── decorators/
+│   │   ├── perfil.decorator.ts           #Define Perfis como Roles no HTTP
+│   │   └── current-user.decorator.ts
+│   ├── guards/                           # Guards JWT
+│   │   ├── perfis.guard.ts
 │   │   ├── jwt-auth.guard.ts
 │   │   └── jwt-refresh.guard.ts
-│   ├── strategies/           # Estratégias Passport
-│   │   ├── jwt.strategy.ts
-│   │   └── jwt-refresh.strategy.ts
-│   ├── auth.controller.ts
-│   ├── auth.module.ts
-│   └── auth.service.ts
-├── users/
-│   ├── users.controller.ts
-│   ├── users.module.ts
-│   └── users.service.ts      # Simulação de DB em memória
-├── common/
-│   └── decorators/
-│       └── current-user.decorator.ts
 ├── app.module.ts
 └── main.ts
 ```
@@ -106,7 +120,5 @@ src/
 - ✅ Variáveis de ambiente com @nestjs/config
 
 ## Próximos passos sugeridos
-- [ ] Substituir o DB em memória por TypeORM + PostgreSQL
 - [ ] Adicionar Swagger (`@nestjs/swagger`)
-- [ ] Implementar roles/permissões com `@Roles()` decorator
 - [ ] Adicionar rate limiting (`@nestjs/throttler`)
