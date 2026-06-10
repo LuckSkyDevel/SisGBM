@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+  moduleFormat = "commonjs"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas = ["seguranca"]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+
+model Usuario {
+  codUsuario BigInt   @id(map: "tb_usuario_pk") @default(dbgenerated("nextval('seguranca.tb_usuario_cod_usuario_seq::regclass')")) @map("cod_usuario")
+  nomUsuario String   @db.VarChar @map("nom_usuario")
+  desEmail   String   @db.VarChar @map("des_email")
+  desSenha   String   @db.VarChar @map("des_senha") 
+  refreshToken String? @db.VarChar @map("str_refresh_token")
+  perfis      UsuarioPerfil[]
+  datCriacao DateTime @default(now()) @db.Date @map("dat_criacao")
+  datAtualizacao DateTime @db.Date @map("dat_atualizacao")
+
+  @@map("tb_usuario")
+  @@schema("seguranca")
+}
+
+model Perfil {
+  codPerfil BigInt   @id(map: "tb_perfil_pk") @default(dbgenerated("nextval('seguranca.tb_perfil_cod_perfil_seq::regclass')")) @map("cod_perfil")
+  nomPerfil String   @db.VarChar @map("nom_perfil") @unique
+  usuarios     UsuarioPerfil[]
+  datCriacao DateTime @default(now()) @db.Date @map("dat_criacao")
+
+  @@map("tb_perfil")
+  @@schema("seguranca")
+}
+
+model UsuarioPerfil {
+  codUsuario BigInt @map("cod_usuario")
+  codPerfil  BigInt @map("cod_perfil")
+
+  usuario Usuario @relation(fields: [codUsuario], references: [codUsuario], onDelete: Cascade)
+  perfil  Perfil  @relation(fields: [codPerfil], references: [codPerfil], onDelete: Cascade)
+
+  @@id([codUsuario, codPerfil], map: "tb_usuario_perfil_pk")
+  @@map("tb_usuario_perfil")
+  @@schema("seguranca")
+}
