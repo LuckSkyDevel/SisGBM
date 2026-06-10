@@ -118,6 +118,7 @@ src/
 - ✅ Validação de entrada com class-validator
 - ✅ Decorator `@CurrentUser()` reutilizável
 - ✅ Variáveis de ambiente com @nestjs/config
+- ✅ Clean Architecture
 
 ## Próximos passos sugeridos
 - [ ] Adicionar Swagger (`@nestjs/swagger`)
