@@ -14,7 +14,7 @@ import { ListaPerfisUseCase } from '../application/lista-perfis.usecase';
 import { RemovePerfilUseCase } from '../application/remove-perfil.usecase';
 import { Perfil } from '../domain/perfil.enum';
 import { CreatePerfilDto } from '../application/dto/create-perfil.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { PerfisGuard } from 'src/common/guards/perfis.guards';
 
 @UseGuards(JwtAuthGuard, PerfisGuard)

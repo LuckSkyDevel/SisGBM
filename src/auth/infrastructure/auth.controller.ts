@@ -6,10 +6,10 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { RegisterDto } from '../dto/register.dto';
-import { LoginDto } from '../dto/login.dto';
-import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RegisterDto } from '../application/dto/register.dto';
+import { LoginDto } from '../application/dto/login.dto';
+import { JwtRefreshGuard } from '../../common/guards/jwt-refresh.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { RegisterUseCase } from '../application/register.usecase';
 import { LoginUseCase } from '../application/login.usecase';
