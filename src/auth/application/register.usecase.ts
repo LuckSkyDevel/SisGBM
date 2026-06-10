@@ -3,6 +3,7 @@ import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import * as userRepository from 'src/user/domain/user.repository';
 import { AuthService } from '../infrastructure/auth.service';
 import { Perfil } from 'src/perfil/domain/perfil.enum';
+import { AssignPerfilUseCase } from 'src/perfil/application/assign-perfil.usecase';
 
 @Injectable()
 export class RegisterUseCase {
@@ -10,6 +11,7 @@ export class RegisterUseCase {
     @Inject(userRepository.USER_REPOSITORY)
     private readonly userRepo: userRepository.IUserRepository,
     private readonly authService: AuthService,
+    private readonly assingPerfil: AssignPerfilUseCase,
   ) {}
 
   async execute(nomeUsuario: string, email: string, senha: string) {
@@ -25,6 +27,8 @@ export class RegisterUseCase {
     const tokens = await this.authService.generateTokens(newUser.codUsuario, newUser.desEmail, newUser.nomUsuario, [Perfil.USER]);
     
     await this.userRepo.updateRefreshToken(BigInt(newUser.codUsuario), tokens.refreshToken);
+
+    await this.assingPerfil.execute(newUser.codUsuario, Perfil.USER);
 
     return { user: newUser.toPublic(), ...tokens };
   }

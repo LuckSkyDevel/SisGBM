@@ -29,9 +29,10 @@ services:
       - node_modules:/usr/src/app/node_modules
     ports:
       - '3000:3000'
+    env_file:
+      - .env
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/sisvigia?schema=seguranca
 volumes:
   pgdata:
   node_modules:

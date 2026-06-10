@@ -14,7 +14,7 @@ CREATE SEQUENCE "tb_usuario_cod_usuario_seq"
 
 -- AlterTable
 ALTER TABLE "tb_usuario" 
-ALTER COLUMN "cod_usuario" SET DEFAULT nextval('seguranca.tb_usuario_cod_usuario_seq');
+ALTER COLUMN "cod_usuario" SET DEFAULT nextval('tb_usuario_cod_usuario_seq');
 
 CREATE SEQUENCE "tb_perfil_cod_perfil_seq"
 	INCREMENT BY 1
@@ -26,7 +26,7 @@ CREATE SEQUENCE "tb_perfil_cod_perfil_seq"
 
 -- CreateTable
 CREATE TABLE "tb_perfil" (
-    "cod_perfil" BIGINT NOT NULL DEFAULT nextval('seguranca.tb_perfil_cod_perfil_seq'),
+    "cod_perfil" BIGINT NOT NULL DEFAULT nextval('tb_perfil_cod_perfil_seq'),
     "nom_perfil" VARCHAR NOT NULL,
     "dat_criacao" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

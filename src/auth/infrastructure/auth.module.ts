@@ -13,10 +13,12 @@ import { LoginUseCase } from '../application/login.usecase';
 import { LogoutUseCase } from '../application/logout.usecase';
 import { UserPrismaRepository } from 'src/user/infrastructure/user.prisma.repository';
 import { USER_REPOSITORY } from 'src/user/domain/user.repository';
+import { PerfilModule } from 'src/perfil/infrastructure/perfil.module';
 
 @Module({
   imports: [
     UsersModule,
+    PerfilModule,
     PassportModule,
     JwtModule.register({}),
   ],
