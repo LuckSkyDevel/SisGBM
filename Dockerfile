@@ -29,6 +29,12 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 COPY . .
+COPY prisma ./prisma
+COPY prisma.config.ts ./
+
+# ARG para receber a variável no build
+ARG DIRECT_URL
+ENV DIRECT_URL=${DIRECT_URL}
 
 RUN yarn prisma generate
 RUN yarn build
