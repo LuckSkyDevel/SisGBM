@@ -29,7 +29,7 @@ FROM node:22-alpine AS builder
 # O Prisma 7 precisa do openssl no Alpine para gerar o Client corretamente
 RUN apk add --no-cache openssl
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package.json yarn.lock ./
 COPY prisma ./prisma
@@ -57,13 +57,13 @@ FROM node:22-alpine AS production
 # O Prisma 7 precisa do openssl no Alpine para gerar o Client corretamente
 RUN apk add --no-cache openssl
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/package.json ./
-COPY --from=builder /usr/src/app/prisma ./prisma
-COPY --from=builder /usr/src/app/prisma.config.ts ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./
 
 EXPOSE 3000
 
