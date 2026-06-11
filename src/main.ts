@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
@@ -17,12 +18,6 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const port = process.env.PORT ?? 3000;
-  await app.listen(port);
-  console.log(`\n🚀 Servidor rodando em: http://localhost:${port}/api`);
-  console.log(`📋 Endpoints disponíveis:`);
-  console.log(`   POST /api/auth/register`);
-  console.log(`   POST /api/auth/login`);
-  console.log(`   POST /api/auth/refresh`);
-  console.log(`   POST /api/auth/logout`);
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();

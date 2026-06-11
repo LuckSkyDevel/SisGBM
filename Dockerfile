@@ -2,7 +2,7 @@
 FROM node:22.20.0-alpine AS development
 
 # 2. Defina o diretório de trabalho dentro do container
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # 3. Copie os arquivos de dependências
 COPY package.json yarn.lock ./
@@ -21,21 +21,33 @@ EXPOSE 3000
 CMD ["yarn", "start:dev"]
 
 
-# Produção: Use uma imagem mais leve para rodar a aplicação
-FROM node:22.20.0-alpine AS production
+FROM node:22-alpine AS builder
 
-WORKDIR /app
+WORKDIR /usr/src/app
+
+RUN npm install -g yarn
 
 COPY package.json yarn.lock ./
+RUN yarn install
 
-# Instale apenas as dependências de produção
-RUN yarn install --production --frozen-lockfile
+COPY . .
 
-# Copie o código compilado da etapa de desenvolvimento
-COPY --from=development /app/dist ./dist
+RUN yarn prisma generate
+RUN yarn build
 
-# Exponha a porta padrão do NestJS (ou a porta que você configurou)
+
+# Produção: Use uma imagem mais leve para rodar a aplicação
+FROM node:22-alpine AS production
+
+WORKDIR /usr/src/app
+
+RUN npm install -g yarn
+
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/package.json ./
+COPY --from=builder /usr/src/app/prisma ./prisma
+
 EXPOSE 3000
 
-# Comando para rodar a aplicação
-CMD ["node", "dist/main"]
+CMD ["yarn", "start:prod"]
