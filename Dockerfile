@@ -47,6 +47,12 @@ COPY . .
 
 RUN yarn build
 
+RUN echo "===== DIST ====="
+RUN ls -R dist
+
+RUN echo "Build finalizado"
+RUN find /app -name "main*"
+
 # Limpa dependências de desenvolvimento para economizar espaço
 RUN rm -rf node_modules && yarn install --frozen-lockfile --production
 
