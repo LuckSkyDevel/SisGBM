@@ -39,8 +39,6 @@ FROM node:22-alpine AS production
 
 WORKDIR /usr/src/app
 
-RUN npm install -g yarn
-
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/package.json ./
