@@ -8,6 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { PerfisGuard } from './common/guards/perfis.guards';
 import { PerfilModule } from './perfil/infrastructure/perfil.module';
 import { EscalaModule } from './scale/infrastructure/escala.module';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EscalaModule } from './scale/infrastructure/escala.module';
     EscalaModule,
   ],
   providers: [
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: PerfisGuard },
   ],
 })

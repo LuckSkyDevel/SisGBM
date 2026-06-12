@@ -7,10 +7,11 @@ import { PrismaService } from 'src/db/prisma.service';
 import { IUserRepository } from '../domain/user.repository';
 import { UserEntity } from '../domain/user.entity';
 import { Injectable } from '@nestjs/common';
+import { Perfil } from 'src/perfil/domain/perfil.enum';
 
 @Injectable()
 export class UserPrismaRepository implements IUserRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   private toEntity(user: any): UserEntity {
     return new UserEntity(
@@ -20,7 +21,7 @@ export class UserPrismaRepository implements IUserRepository {
       user.desSenha,
       user.datCriacao,
       user.datAtualizacao,
-      user.perfis ? user.perfis.map((p) => p.nomPerfil as string) : [],
+      user.perfis ? user.perfis.map((p) => p.perfil.nomPerfil as Perfil) : [],
       user.refreshToken,
     );
   }
@@ -40,13 +41,31 @@ export class UserPrismaRepository implements IUserRepository {
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
-    const user = await this.prismaService.usuario.findFirst({ where: { desEmail: email } });
+    const user = await this.prismaService.usuario.findFirst({
+      where: { desEmail: email },
+      include: {
+        perfis: {
+          include: {
+            perfil: true
+          }
+        }
+      }
+    });
 
     return user ? this.toEntity(user) : null;
   }
 
   async findById(codUser: bigint): Promise<UserEntity | null> {
-    const user = await this.prismaService.usuario.findUnique({ where: { codUsuario: codUser } });
+    const user = await this.prismaService.usuario.findUnique({
+      where: { codUsuario: codUser },
+      include: {
+        perfis: {
+          include: {
+            perfil: true
+          }
+        }
+      }
+    });
 
     return user ? this.toEntity(user) : null;
   }

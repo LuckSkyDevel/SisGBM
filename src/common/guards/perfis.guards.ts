@@ -27,9 +27,7 @@ export class PerfisGuard implements CanActivate {
     if (!user)
       throw new ForbiddenException("Acesso negado: usuário não autenticado.");
 
-
     const hasPerfis = requiredPerfis.some((perfil) => user.perfis?.includes(perfil));
-
 
     if (!hasPerfis) {
       throw new ForbiddenException("Acesso negado: você não tem permissão para acessar este recurso.");
