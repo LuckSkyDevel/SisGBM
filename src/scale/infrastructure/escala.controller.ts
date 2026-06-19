@@ -2,12 +2,14 @@ import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { GerarEscalaDto } from '../application/dto/gerar-escala.dto';
 import { GerarEscalaUseCase } from '../application/gerar-escala.usecase';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('Escala')
 @Controller('escala')
 export class EscalaController {
   constructor(private readonly gerarEscalaUseCase: GerarEscalaUseCase) {}
 
+  @Public()
   @Post('gerar')
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
